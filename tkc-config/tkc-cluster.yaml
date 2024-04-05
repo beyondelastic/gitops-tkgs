@@ -1,23 +1,24 @@
-apiVersion: run.tanzu.vmware.com/v1alpha1      #TKG API endpoint
+apiVersion: run.tanzu.vmware.com/v1alpha3      #TKG API endpoint
 kind: TanzuKubernetesCluster                   #required parameter
 metadata:
-  name: tkc-argo-1                          #cluster name, user defined
-  namespace: tools                     #supervisor namespace
+  name: tkc-argo-1                             #cluster name, user defined
+  namespace: tools                             #supervisor namespace
 spec:
-  distribution:
-    version: v1.19                             #resolved kubernetes version
   topology:
     controlPlane:
-      count: 1                                 #number of control plane nodes
-      class: best-effort-small                 #vmclass for control plane nodes
-      storageClass: gold         #storageclass for control plane
-    workers:
-      count: 1                                 #number of worker nodes
-      class: best-effort-small                 #vmclass for worker nodes
-      storageClass: gold         #storageclass for worker nodes
+      replicas: 1                              #number of control plane nodes
+      vmClass: best-effort-medium              #vmclass for control plane nodes
+      storageClass: tanzu-storage-class                       #storageclass for control plane
+      tkr:
+        reference:
+          name: v1.25.7---vmware.3-fips.1-tkg.1
+    nodePools:
+    - replicas: 1
+      name: worker                             #number of worker nodes
+      vmClass: best-effort-medium              #vmclass for worker nodes
+      storageClass: tanzu-storage-class                       #storageclass for worker nodes
   settings:
     storage:
-      defaultClass: gold
-    network:
-      cni:
-        name: antrea
+      defaultClass: tanzu-storage-class
+ 
+
