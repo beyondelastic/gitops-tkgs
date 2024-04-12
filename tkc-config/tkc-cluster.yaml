@@ -13,7 +13,7 @@ spec:
         reference:
           name: v1.25.7---vmware.3-fips.1-tkg.1
     nodePools:
-    - replicas: 2
+    - replicas: 1
       name: worker                             #number of worker nodes
       vmClass: best-effort-medium              #vmclass for worker nodes
       storageClass: tanzu-storage-class                       #storageclass for worker nodes
