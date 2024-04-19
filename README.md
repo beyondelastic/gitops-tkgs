@@ -1,4 +1,4 @@
-# gitops-tkgs
+# GitOps with ArgoCD and vSphere with Tanzu (aka TKGs)
 
 This repo can be used to test a GitOps approach with ArgoCD and a vSphere with Tanzu Supervisor cluster. ArgoCD will be installed in a TKG workload cluster as described below. The Supervisor cluster and vSphere Namespace will be connected as a target. 
 
@@ -9,34 +9,34 @@ This repo can be used to test a GitOps approach with ArgoCD and a vSphere with T
 `kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml`
 
 2. Be aware of docker rate limits, you might want to use an imagepullsecret for the redis pod (create secret first)  
-kubectl -n argocd patch serviceaccount argocd-redis -p '{"imagePullSecrets": [{"name": "regcred"}]}’
+`kubectl -n argocd patch serviceaccount argocd-redis -p '{"imagePullSecrets": [{"name": "regcred"}]}'`
 
 3. Change to service type LoadBalancer  
-kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+`kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'`
 
 4. Install argocd cli on your client  
-brew install argocd
+`brew install argocd`
 
 5. Adjust argocd configmap with resource exclusions and inclusions for supervisor usage, see example [here](argocd-config/argocd-cm.yaml)  
-Kubectl -n argocd edit cm argocd-cm
+`kubectl -n argocd edit cm argocd-cm`
 
 6. Change argo default pw  
-kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d  
-argocd login x.x.x.x  
-argocd account update-password
+`kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d`  
+`argocd login x.x.x.x`  
+`argocd account update-password`
 
 ## Add the Supervisor cluster to ArgoCD
 
 1. Logon to your Supervisor Cluster as administrator and create a service account in a vSphere Namespace (argocd system-namespace)  
-kubectl create serviceaccount argocd-sa -n ese
+`kubectl create serviceaccount argocd-sa -n ese`
 
 2. Create a rolebinding within the vSphere Namespace that you want to use as a target  
-Kubectl create rolebinding argo-edit-binding --clusterrole=edit --serviceaccount=ese:argocd-sa -n usercon
+`kubectl create rolebinding argo-edit-binding --clusterrole=edit --serviceaccount=ese:argocd-sa -n usercon`
 
 Note: To onboard additional vSphere Namespaces, create the same rolebinding in the new namespace and add the namespace to the managed namespaces under the ArgoCD cluster configuration
 
 3. Add the Supervisor Cluster to ArgoCD via argocd CLI  
-argocd cluster add x.x.x.x --service-account argocd-sa --system-namespace ese --namespace usercon
+`argocd cluster add x.x.x.x --service-account argocd-sa --system-namespace ese --namespace usercon`
 
 After adding the Supervisor cluster to ArgoCD you can decide if you want to create the ArgoCD applicaitons via the UI or to use the manifests [here](argocd-config)
 
