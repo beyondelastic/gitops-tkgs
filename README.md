@@ -27,20 +27,20 @@ This repo can be used to test a GitOps approach with ArgoCD and a vSphere with T
 
 ## Add the Supervisor cluster to ArgoCD
 
-1. Logon to your Supervisor Cluster as administrator and create a service account in a vSphere Namespace (argocd system-namespace)  
+1. Logon to your Supervisor Cluster as administrator and create a service account in a vSphere Namespace e.g. "ese"(argocd system-namespace)  
 `kubectl create serviceaccount argocd-sa -n ese`
 
 2. Create a rolebinding within the vSphere Namespace that you want to use as a target  
 `kubectl create rolebinding argo-edit-binding --clusterrole=edit --serviceaccount=ese:argocd-sa -n usercon`
 
-Note: To onboard additional vSphere Namespaces, create the same rolebinding in the new namespace and add the namespace to the managed namespaces under the ArgoCD cluster configuration
+Note: To onboard additional vSphere Namespaces, create an identical rolebinding referencing the previously created service account in the new namespace and add the namespace to the managed namespaces under the ArgoCD cluster configuration
 
-3. Add the Supervisor Cluster to ArgoCD via argocd CLI  
+1. Add the Supervisor Cluster to ArgoCD via argocd CLI  
 `argocd cluster add x.x.x.x --service-account argocd-sa --system-namespace ese --namespace usercon`
 
-After adding the Supervisor cluster to ArgoCD you can decide if you want to create the ArgoCD applicaitons via the UI or to use the manifests [here](argocd-config)
+After adding the Supervisor cluster to ArgoCD you can decide if you want to create the ArgoCD applications via the UI or to use the manifests [here](argocd-config)
 
-Argo CD repository, configmap and application manifests in argocd-config/  
+Argo CD repository, configmap, and application manifests in argocd-config/  
 TKC manifest in tkc-config/  
 VM Services manifest in vmservice/  
 
