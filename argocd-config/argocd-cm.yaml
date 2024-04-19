@@ -64,6 +64,7 @@ data:
       - "*"
       kinds:
       - ConfigMap
+      - Secret
       clusters:
       - https://10.197.96.161:6443
 kind: ConfigMap
