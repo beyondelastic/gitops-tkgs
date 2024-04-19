@@ -5,22 +5,22 @@ This repo can be used to test a GitOps approach with ArgoCD and a vSphere with T
 ## Install ArgoCD on a TKG cluster
 
 1. Install ArgoCD on TKG cluster    
-kubectl create ns argocd  
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+`kubectl create ns argocd`  
+`kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml`
 
-Note: be aware of docker rate limits, you might want to use an imagepullsecret for the redis pod (create secret first)  
+2. Be aware of docker rate limits, you might want to use an imagepullsecret for the redis pod (create secret first)  
 kubectl -n argocd patch serviceaccount argocd-redis -p '{"imagePullSecrets": [{"name": "regcred"}]}’
 
-1. Change to service type LoadBalancer  
+3. Change to service type LoadBalancer  
 kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
 
-1. Install argocd cli on your client  
+4. Install argocd cli on your client  
 brew install argocd
 
-1. Adjust argocd configmap with resource exclusions and inclusions for supervisor usage, see example [here](argocd-config/argocd-cm.yaml)  
+5. Adjust argocd configmap with resource exclusions and inclusions for supervisor usage, see example [here](argocd-config/argocd-cm.yaml)  
 Kubectl -n argocd edit cm argocd-cm
 
-1. Change argo default pw  
+6. Change argo default pw  
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d  
 argocd login x.x.x.x  
 argocd account update-password
