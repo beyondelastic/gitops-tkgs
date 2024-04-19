@@ -5,7 +5,7 @@ metadata:
   namespace: argocd
 spec:
   destination:
-    namespace: ese
+    namespace: usercon
     server: https://10.197.96.161:6443
   project: default
   syncPolicy:
