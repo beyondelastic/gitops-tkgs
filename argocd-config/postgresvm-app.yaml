@@ -1,10 +1,11 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: tkc-app
+  name: postgres-vm
   namespace: argocd
 spec:
   destination:
+    namespace: tools
     server: https://10.197.96.161:6443
   project: default
   syncPolicy:
@@ -12,6 +13,6 @@ spec:
       prune: false
       selfHeal: false
   source:
-    path: tkc-config 
-    repoURL: https://github.com/beyondelastic/gitops-tkgs.git
+    path: vmservice
+    repoURL: https://github.com/beyondelastic/gitops-tkgs
     targetRevision: HEAD
