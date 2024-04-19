@@ -17,7 +17,7 @@ kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}
 3. Install argocd cli on your client
 brew install argocd
 
-4. Adjust argocd configmap with resource exclusions and inclusions for supervisor usage, see example [https://github.com/beyondelastic/gitops-tkgs/blob/main/argocd-config/argocd-cm.yaml](here)
+4. Adjust argocd configmap with resource exclusions and inclusions for supervisor usage, see example [here](argocd-config/argocd-cm.yaml)
 Kubectl -n argocd edit cm argocd-cm
 
 5. Change argo default pw
