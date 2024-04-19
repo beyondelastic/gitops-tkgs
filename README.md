@@ -1,8 +1,8 @@
 # gitops-tkgs
 
-This repo can be used to test a GitOps approach with ArgoCD and a vSphere with Tanzu Supervisor cluster. 
+This repo can be used to test a GitOps approach with ArgoCD and a vSphere with Tanzu Supervisor cluster. ArgoCD will be installed in a TKG workload cluster as described below. The Supervisor cluster and vSphere Namespace will be connected as a target. 
 
-ArgoCD itself will be installed in a TKG workload cluster as described here:
+## Install ArgoCD on a TKG cluster
 
 1. Install ArgoCD on TKG cluster
 kubectl create ns argocd
@@ -25,7 +25,7 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 argocd login x.x.x.x
 argocd account update-password
 
-Add the Supervisor cluster to your ArgoCD instance:
+## Add the Supervisor cluster to ArgoCD
 
 1. Logon to your Supervisor Cluster as administrator and create a service account in a vSphere Namespace (argocd system-namespace)
 kubectl create serviceaccount argocd-sa -n ese
@@ -38,7 +38,7 @@ Note: To onboard additional vSphere Namespaces, create the same rolebinding in t
 3. Add the Supervisor Cluster to ArgoCD via argocd CLI
 argocd cluster add x.x.x.x --service-account argocd-sa --system-namespace ese --namespace usercon
 
-After adding the Supervisor cluster to ArgoCD you can decide if you want to create the ArgoCD applicaitons via the UI or to use the manifests here
+After adding the Supervisor cluster to ArgoCD you can decide if you want to create the ArgoCD applicaitons via the UI or to use the manifests [here](argocd-config)
 
 Argo CD repository, configmap and application manifests in argocd-config/
 TKC manifest in tkc-config/
