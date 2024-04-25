@@ -1,0 +1,42 @@
+apiVersion: vmoperator.vmware.com/v1alpha1
+kind: VirtualMachine
+metadata:
+  name: bitnami-postgresql # <-- name of the virtual machine object
+  labels:
+    app: postgresql-vm
+#    topology.kubernetes.io/zone: az01 # <-- applicable if you have a vSphere with Tanzu three zone deployment
+  annotations:
+    vmoperator.vmware.com/image-supported-check: enable # <-- image validation webhook option
+spec:
+  imageName: vmi-0a457bfbf2184e85e # <-- virtual machine image (uploaded OVA)
+  className: best-effort-medium # <-- configured virtual machine class
+  powerState: poweredOn
+  storageClass: tanzu-storage-class # <-- configured vSphere storage policy
+  networkInterfaces:
+#  - networkType: nsx-t # <-- if you have vSphere with Tanzu with NSX
+  - networkType: vsphere-distributed # <-- if you're using the vSphere networking stack
+    networkName:  aullah-corp-pg2 # <-- distributed port group name
+  vmMetadata:
+    configMapName: postgresql-vm-cm # <-- name of the configMap (section below)
+    transport: vAppConfig # <-- specify if using the OVF runtime environment
+#    transport: CloudInit # <-- when using CloudInit to for instance initialisation
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: postgresql-vm-cm # <-- name of the configMap which is referenced in the section above
+data: # <-- this section is for all the configurable user data:
+# Set the SSH public key allowed to access the appliance. This will enable the SSHD service and configure the specified public key for the user bitnami.
+  va-ssh-public-key: "ssh-rsa AAAAB3N... user@hostname"
+# User data to be made available inside the instance. This allows to pass any text to the appliance. It will be executed if it starts with a shebang (#!). The value should be encoded in base64.
+  user-data: ""
+# Network 1 IP Address. The IP address for the interface (IP/netmask, e.g.: 192.168.1.10/32). Leave blank to enable DHCP.
+  network.ip0: "10.197.96.154/24"
+# Default Gateway. The default network gateway address. Leave blank to enable DHCP.
+  network.gateway: "10.197.96.253"
+# Domain Name Servers. Comma-separated list of IP addresses to DNS servers.
+  network.dns: "10.197.79.102"
+# Domain Name. The fully-qualified domain name.
+  network.domain: "postgresql01.beyondelastic.demo"
+# DNS Search Path. Comma-separated list of domains to add to the DNS search path.
+  network.searchpath: "beyondelastic.demo"
